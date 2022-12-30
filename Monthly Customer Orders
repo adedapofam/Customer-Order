@@ -1,0 +1,55 @@
+--SELECT * FROM BIT_DB.customers;
+--Now re-write the query to answer this one: What columns are in the JanSales table?
+--SELECT * FROM BIT_DB.JanSales;
+--WHERE order_id <> ''
+--AND order_id <> 'Order_id'
+--How many orders were placed in January? 
+--SELECT * FROM BIT_DB.JanSales;
+/*SELECT COUNT(orderID) 
+FROM BIT_DB.JanSales
+WHERE orderID <> ''
+AND orderID <> 'order ID';*/
+
+--How many of those orders were for an iPhone?
+SELECT COUNT(orderID)
+FROM BIT_DB.JanSales
+WHERE Product = 'iPhone'
+AND orderID <> ''
+AND orderID <>'order ID';
+
+--Select the customer account numbers for all the orders that were placed in February.
+
+SELECT DISTINCT customers.acctnum
+FROM BIT_DB.customers customers
+INNER JOIN BIT_DB.FebSales febsales
+ON customers.order_id = febsales.orderID
+WHERE order_id<> ''
+AND order_id <> 'Order ID';
+
+--Which product was the cheapest one sold in January, and what was the price?
+SELECT Jansales.Product, MIN(Jansales.price) AS Price
+FROM BIT_DB.JanSales;
+
+--What is the total revenue for each product sold in January? (Revenue can be calculated using the number of products sold and the price of the products).
+SELECT Product, SUM(quantity) *price AS Revenue
+FROM BIT_DB.JanSales
+GROUP BY product
+HAVING Revenue <> '';
+
+--Which products were sold in February at 548 Lincoln St, Seattle, WA 98101, how many of each were sold, and what was the total revenue?
+SELECT Product, SUM(Quantity) AS NumberSold, SUM(Quantity)*price AS Revenue
+FROM BIT_DB.FebSales
+WHERE location = '548 Lincoln St, Seattle, WA 98101'
+GROUP BY Product;
+
+--How many customers ordered more than 2 products at a time in February, and what was the average amount spent for those customers?
+SELECT 
+count(distinct cust.acctnum), 
+avg(quantity*price)
+FROM BIT_DB.FebSales Feb
+LEFT JOIN BIT_DB.customers cust
+ON FEB.orderid=cust.order_id
+WHERE Feb.Quantity>2
+AND order_id <> '' 
+AND order_id <> 'Order ID'
+
